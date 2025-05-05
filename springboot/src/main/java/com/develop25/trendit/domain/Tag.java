@@ -1,0 +1,20 @@
+package com.develop25.trendit.domain;
+
+import jakarta.persistence.*;
+
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "tag")
+public class Tag {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long tagId;
+
+    private String name;
+
+    @ManyToMany(mappedBy = "tags")
+    private Set<Product> products = new HashSet<>();
+}
