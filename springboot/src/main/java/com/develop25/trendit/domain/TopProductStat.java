@@ -1,19 +1,33 @@
 package com.develop25.trendit.domain;
 
 import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.Instant;
 
 @Entity
-@Table(name = "top_product_stat")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class TopProductStat {
 
-    @EmbeddedId
-    private ProductWindowKey id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private Long purchaseCount;
-    private Double revenue;
+    private Long productId;
 
-    @ManyToOne
-    @MapsId("productId")
-    @JoinColumn(name = "product_id")
-    private Product product;
+    private String productName;
+
+    private String category;
+
+    private Long salesVolume;
+
+    private Long ranking;
+
+    private Instant windowStart;
+
+    private Instant windowEnd;
 }

@@ -1,15 +1,19 @@
 package com.develop25.trendit.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "user")
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
 
     @Id
@@ -18,8 +22,11 @@ public class User {
     private String name;
     private Integer age;
     private String gender;
-    private boolean receiveAlarm;
+
+    @Column(nullable = false)
+    private boolean receiveAlarm = true;
 
     @OneToMany(mappedBy = "user")
+    @JsonManagedReference
     private List<Product> products = new ArrayList<>();
 }
