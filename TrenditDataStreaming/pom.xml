@@ -72,6 +72,11 @@ under the License.
 			<version>${flink.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-java</artifactId>
+			<version>${flink.version}</version> <!-- 반드시 flink-streaming-java와 버전 맞춰야 함 -->
+		</dependency>
 		<!-- (Optional) JSON 처리 -->
 		<dependency>
 			<groupId>org.apache.flink</groupId>
@@ -85,6 +90,19 @@ under the License.
 			<version>1.18.32</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-connector-jdbc</artifactId>
+			<version>3.1.2-1.17</version>
+		</dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.33</version>
+		</dependency>
+
 		<!-- Add connector dependencies here. They must be in the default scope (compile). -->
 
 		<!-- Example:
@@ -176,7 +194,7 @@ under the License.
 							<transformers>
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>org.example.DataStreamJob</mainClass>
+									<mainClass>org.example.ConversionRateJob</mainClass>
 								</transformer>
 							</transformers>
 						</configuration>
