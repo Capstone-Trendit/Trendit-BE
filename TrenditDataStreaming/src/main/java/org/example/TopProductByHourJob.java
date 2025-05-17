@@ -18,19 +18,17 @@ import org.apache.flink.util.Collector;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class TopProductByHourJob {
     public static void main(String[] args) throws Exception {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
         KafkaSource<ConsumerEvent> kafkaSource = KafkaSource.<ConsumerEvent>builder()
-                .setBootstrapServers("localhost:9092")
+                .setBootstrapServers("kafka:29092")
                 .setTopics("user-events")
                 .setGroupId("flink-consumer-group")
                 .setStartingOffsets(OffsetsInitializer.earliest())
@@ -44,7 +42,7 @@ public class TopProductByHourJob {
         // 테스팅을 위해 최근 20초간 top 5 상품 8초로 출력
         stream
                 .keyBy(ConsumerEvent::getProductId)
-                .window(SlidingProcessingTimeWindows.of(Time.minutes(1), Time.seconds(10)))
+                .window(SlidingProcessingTimeWindows.of(Time.seconds(20), Time.seconds(8)))
                 .aggregate(new CountAggregator(), new CountResultWindowFunction())
                 .windowAll(SlidingProcessingTimeWindows.of(Time.seconds(20), Time.seconds(8)))
                 .process(new TopNProcessFunction(5))
@@ -83,7 +81,7 @@ public class TopProductByHourJob {
             // 1. 상품 ID별로 집계 합치기
             Map<Long, Long> mergedCounts = new HashMap<>();
             for (Tuple2<Long, Long> entry : input) {
-                mergedCounts.merge(entry.f0, entry.f1, Long::max);  // 최신값 유지 (혹은 += 누적 가능)
+                mergedCounts.put(entry.f0, entry.f1);  // 윈도우 단위로 리셋되는 집계
             }
 
             // 2. 정렬 후 Top 5 추출
