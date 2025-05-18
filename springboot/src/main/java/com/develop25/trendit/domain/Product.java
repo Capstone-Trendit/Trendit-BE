@@ -38,13 +38,12 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<ConsumerEvent> events = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "product_tag",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    @Builder.Default
     private Set<Tag> tags = new HashSet<>();
 
     public Product(String name, Double price, Long count){

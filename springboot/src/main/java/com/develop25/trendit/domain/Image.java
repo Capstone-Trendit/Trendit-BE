@@ -20,4 +20,8 @@ public class Image {
     @Lob
     @Column(columnDefinition = "LONGBLOB") // MySQL 기준
     private byte[] image;
+
+    @OneToOne
+    @JoinColumn(name = "product_id") // Image 테이블에 외래 키로 product_id 생성
+    private Product product;
 }
