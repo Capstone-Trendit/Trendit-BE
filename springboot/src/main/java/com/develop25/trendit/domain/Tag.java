@@ -18,6 +18,9 @@ public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tagId;
+    private Long productId;
+
+    private String tag;
 
     private String name;
 
