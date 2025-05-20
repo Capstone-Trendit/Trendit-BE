@@ -4,6 +4,8 @@ import com.develop25.trendit.domain.User;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,6 +16,7 @@ public class ProductRegisterRequest {
     public String name;
     public Double price;
     public Long count;
-    public String tags;
-    public User user;
+    public List<String> tags;
+    public String userId;
+    public String userPassword;
 }
