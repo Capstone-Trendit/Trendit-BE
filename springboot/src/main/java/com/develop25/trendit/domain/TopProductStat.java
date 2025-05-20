@@ -21,8 +21,6 @@ public class TopProductStat {
 
     private String productName;
 
-    private String category;
-
     private Long salesVolume;
 
     private Long ranking;
