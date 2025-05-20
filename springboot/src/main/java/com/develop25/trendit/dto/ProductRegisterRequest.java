@@ -17,6 +17,6 @@ public class ProductRegisterRequest {
     public Double price;
     public Long count;
     public List<String> tags;
-    public String userId;
-    public String userPassword;
+    //public String userId;
+    //public String userPassword;
 }
