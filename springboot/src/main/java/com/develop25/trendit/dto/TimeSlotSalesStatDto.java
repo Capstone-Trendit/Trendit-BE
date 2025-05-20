@@ -1,9 +1,15 @@
 package com.develop25.trendit.dto;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class TimeSlotSalesStatDto {
-    private String hourSlot;       // ex: "14:00-15:00"
+    private int hourOfDay;
     private Long salesCount;
 }

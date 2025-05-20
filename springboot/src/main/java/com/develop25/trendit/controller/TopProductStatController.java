@@ -16,7 +16,7 @@ import java.util.List;
 public class TopProductStatController {
     private final TopProductStatService topProductStatService;
 
-    @GetMapping("/top-products")
+    @GetMapping("/top-purchase")
     public ResponseEntity<List<TopProductStat>> getTop5() {
         return ResponseEntity.ok(topProductStatService.getLatestTop5());
     }

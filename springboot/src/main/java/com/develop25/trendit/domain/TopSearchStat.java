@@ -11,7 +11,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TopProductStat {
+public class TopSearchStat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ public class TopProductStat {
 
     private String productName;
 
-    private Long salesVolume;
+    private Long searchVolume;
 
     private Long ranking;
 
