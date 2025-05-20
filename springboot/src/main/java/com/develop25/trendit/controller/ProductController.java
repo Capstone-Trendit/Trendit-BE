@@ -64,12 +64,12 @@ public class ProductController {
         Double price = request.getPrice();
         Long count = request.getCount();
         List<String> tags = request.getTags();
-        String userId = request.getUserId();
-        String userPassword = request.getUserPassword();
+        //String userId = request.getUserId();
+        //String userPassword = request.getUserPassword();
 
         //유저 id로 유저 객체 조회
-        User user = userRepository.findByUserIdAndPassword(userId, userPassword)
-                .orElseThrow(() -> new IllegalArgumentException("해당 userId를 가진 사용자가 존재하지 않습니다: " + userId));
+//        User user = userRepository.findByUserIdAndPassword(userId, userPassword)
+//                .orElseThrow(() -> new IllegalArgumentException("해당 userId를 가진 사용자가 존재하지 않습니다: " + userId));
 
 
         // ✅ Step 1: 상품 정보 저장
@@ -77,7 +77,7 @@ public class ProductController {
         product.setName(name);
         product.setPrice(price);
         product.setCount(count);
-        product.setUser(user);
+        //product.setUser(user);
         product = productRepository.save(product);
 
         // ✅ Step 2: 이미지 저장
