@@ -8,6 +8,7 @@ import com.develop25.trendit.dto.ProductRegisterRequest;
 import com.develop25.trendit.repository.ProductImageRepository;
 import com.develop25.trendit.repository.ProductRepository;
 import com.develop25.trendit.repository.TagRepository;
+import com.develop25.trendit.repository.UserRepository;
 import com.develop25.trendit.service.ImageTagService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,6 +41,8 @@ public class ProductController {
     private ImageTagService imageTagService;
     @Autowired
     private TagRepository tagRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     //POST
     //상품 등록 api
@@ -115,6 +118,7 @@ public class ProductController {
                     )
             )
     )
+
     @PostMapping("/register")
     public ResponseEntity<?> registerProduct(@ModelAttribute ProductRegisterRequest request) throws IOException {
 
@@ -122,8 +126,14 @@ public class ProductController {
         String name = request.getName();
         Double price = request.getPrice();
         Long count = request.getCount();
-        String tagsJson = request.getTags();
-        User user = request.getUser();
+        List<String> tags = request.getTags();
+        String userId = request.getUserId();
+        String userPassword = request.getUserPassword();
+
+        //유저 id로 유저 객체 조회
+        User user = userRepository.findByUserIdAndPassword(userId, userPassword)
+                .orElseThrow(() -> new IllegalArgumentException("해당 userId를 가진 사용자가 존재하지 않습니다: " + userId));
+
 
         // ✅ Step 1: 상품 정보 저장
         Product product = new Product();
@@ -140,8 +150,8 @@ public class ProductController {
         productImageRepository.save(image);
 
         // ✅ Step 3: 태그 저장
-        ObjectMapper mapper = new ObjectMapper();
-        List<String> tags = mapper.readValue(tagsJson, new TypeReference<List<String>>() {});
+        //ObjectMapper mapper = new ObjectMapper();
+        //List<String> tags = mapper.readValue(tagsJson, new TypeReference<List<String>>() {});
 
         for (String tagStr : tags) {
             Tag tag = new Tag();
