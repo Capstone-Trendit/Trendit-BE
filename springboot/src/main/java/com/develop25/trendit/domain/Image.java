@@ -22,6 +22,7 @@ public class Image {
     private byte[] image;
 
     @OneToOne
+    @MapsId // PK를 외래키에 매핑
     @JoinColumn(name = "product_id") // Image 테이블에 외래 키로 product_id 생성
     private Product product;
 }
