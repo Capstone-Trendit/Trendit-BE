@@ -19,8 +19,8 @@ public class ImageTagService {
     private String apiKey;
 
     public List<String> generateTags(byte[] imageBytes) throws IOException, JSONException {
-        String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-
+        //String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+        String imageDataUri = ImageUtil.createDataUriFromImage(imageBytes);
         String apiUrl = "https://api.openai.com/v1/chat/completions";
 
         OkHttpClient client = new OkHttpClient();
@@ -30,7 +30,7 @@ public class ImageTagService {
                 "  \"messages\": [\n" +
                 "    {\"role\": \"system\", \"content\": \"You're a helpful assistant that extracts keywords from images.\"},\n" +
                 "    {\"role\": \"user\", \"content\": [\n" +
-                "      {\"type\": \"image_url\", \"image_url\": {\"url\": \"data:image/png;base64," + base64Image + "\"}},\n" +
+                "      {\"type\": \"image_url\", \"image_url\": {\"url\": \"" + imageDataUri + "\"}},\n" +
                 "      {\"type\": \"text\", \"text\": \"이미지에서 태그(명사 위주)를 5개 뽑아줘. 리스트 형태로.\"}\n" +
                 "    ]}\n" +
                 "  ],\n" +
