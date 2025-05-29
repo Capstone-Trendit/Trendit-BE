@@ -8,6 +8,7 @@ import com.develop25.trendit.repository.ProductImageRepository;
 import com.develop25.trendit.repository.ProductRepository;
 import com.develop25.trendit.repository.TagRepository;
 import com.develop25.trendit.service.ImageTagService;
+import com.develop25.trendit.service.SituationTagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,7 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -36,6 +40,8 @@ public class TagController {
     private TagRepository tagRepository;
     @Autowired
     private ImageTagService tagService;
+    @Autowired
+    private SituationTagService situationTagService;
 
     @Value("${openai.api.key}")
     private String openaiApiKey;
@@ -57,9 +63,17 @@ public class TagController {
         MultipartFile file = request.getFile();
         byte[] imageBytes = file.getBytes();
         List<String> tags = tagService.generateTags(imageBytes);
-
-        return ResponseEntity.ok(tags);
+        // 상품명은 이미지 태그의 첫 번째 요소
+        String productName = tags.isEmpty() ? "" : tags.get(0);
+        // 2. 상품명 기반 상황 태그 생성
+        List<String> situationTags = situationTagService.generateAdditionalTags(productName);
+        // 3. 태그 통합 (중복 제거)
+        Set<String> finalTags = new LinkedHashSet<>(); // 순서 유지
+        finalTags.addAll(tags);
+        finalTags.addAll(situationTags);
+        return ResponseEntity.ok(new ArrayList<>(finalTags));
     }
+
 
 
 
