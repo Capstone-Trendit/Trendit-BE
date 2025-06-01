@@ -7,6 +7,7 @@ import com.develop25.trendit.dto.ImageUploadRequest;
 import com.develop25.trendit.repository.ProductImageRepository;
 import com.develop25.trendit.repository.ProductRepository;
 import com.develop25.trendit.repository.TagRepository;
+import com.develop25.trendit.service.BasicTagService;
 import com.develop25.trendit.service.ImageTagService;
 import com.develop25.trendit.service.SituationTagService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,6 +43,9 @@ public class TagController {
     private ImageTagService tagService;
     @Autowired
     private SituationTagService situationTagService;
+    @Autowired
+    private BasicTagService basicTagService;
+
 
     @Value("${openai.api.key}")
     private String openaiApiKey;
@@ -61,18 +65,30 @@ public class TagController {
     public ResponseEntity<List<String>> generateTags(@ModelAttribute ImageUploadRequest request) throws IOException {
 
         MultipartFile file = request.getFile();
-        byte[] imageBytes = file.getBytes();
-        List<String> tags = tagService.generateTags(imageBytes);
+        String productName = request.getProductName();
+        // 1. 상품명 기반 태그 먼저 조회
+        List<String> basicTags = basicTagService.getTagsByProductName(productName);
+        List<String> tags;
+        //기본 태그가 없으면 이미지 기반 태그 생성
+        if(basicTags.isEmpty()){
+            byte[] imageBytes = file.getBytes();
+            tags = tagService.generateTags(imageBytes);
+        }
+        else{
+            tags = basicTags;
+        }
+
         // 상품명은 이미지 태그의 첫 번째 요소
-        String productName = tags.isEmpty() ? "" : tags.get(0);
+        //String productName = tags.isEmpty() ? "" : tags.get(0);
         // 2. 상품명 기반 상황 태그 생성
-        List<String> situationTags = situationTagService.generateAdditionalTags(productName);
+        //List<String> situationTags = situationTagService.generateAdditionalTags(productName);
         // 3. 태그 통합 (중복 제거)
         Set<String> finalTags = new LinkedHashSet<>(); // 순서 유지
         finalTags.addAll(tags);
-        finalTags.addAll(situationTags);
+        //finalTags.addAll(situationTags);
         return ResponseEntity.ok(new ArrayList<>(finalTags));
     }
+
 
 
 
