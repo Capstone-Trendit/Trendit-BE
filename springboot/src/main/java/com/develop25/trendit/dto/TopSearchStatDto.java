@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class TopProductStatDto {
+public class TopSearchStatDto {
     private Long productId;
     private String productName;
-    private Long salesVolume;
+    private Long searchVolume;
     private Long ranking;
 }

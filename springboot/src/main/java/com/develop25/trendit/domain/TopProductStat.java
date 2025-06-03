@@ -13,19 +13,10 @@ import java.time.Instant;
 @Builder
 public class TopProductStat {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private Long productId;
-
-    private String productName;
+    @EmbeddedId
+    private ProductWindowKey id;
 
     private Long salesVolume;
 
     private Long ranking;
-
-    private Instant windowStart;
-
-    private Instant windowEnd;
 }
