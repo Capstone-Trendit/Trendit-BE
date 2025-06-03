@@ -1,6 +1,7 @@
 package com.develop25.trendit.controller;
 
 import com.develop25.trendit.domain.TopProductStat;
+import com.develop25.trendit.dto.TopProductStatDto;
 import com.develop25.trendit.service.TopProductStatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class TopProductStatController {
     private final TopProductStatService topProductStatService;
 
     @GetMapping("/top-purchase")
-    public ResponseEntity<List<TopProductStat>> getTop5() {
+    public ResponseEntity<List<TopProductStatDto>> getTop5() {
         return ResponseEntity.ok(topProductStatService.getLatestTop5());
     }
 }
