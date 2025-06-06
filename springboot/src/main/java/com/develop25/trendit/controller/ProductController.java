@@ -10,6 +10,7 @@ import com.develop25.trendit.repository.ProductRepository;
 import com.develop25.trendit.repository.TagRepository;
 import com.develop25.trendit.repository.UserRepository;
 import com.develop25.trendit.service.ImageTagService;
+import com.develop25.trendit.service.UtilTagService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,8 @@ public class ProductController {
     private TagRepository tagRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UtilTagService utilTagService;
 
 
     //swagger의 multipart/form-data 인식을 위한 어노테이션
@@ -98,6 +101,8 @@ public class ProductController {
             product.getTags().add(tag); // ✅ 관계 설정은 product 쪽에서
         }
         productRepository.save(product); // ✅ 연관관계 반영
+
+        utilTagService.saveTags(name, tags);
 
         return ResponseEntity.ok("상품 등록 완료");
     }
