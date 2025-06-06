@@ -13,4 +13,6 @@ public interface BasicTagRepository extends JpaRepository<BasicTag, Long> {
 
     @Query("SELECT bt.tag FROM BasicTag bt WHERE bt.productName = :productName")
     List<String> findTagsByProductName(@Param("productName") String productName);
+
+    void deleteByProductName(String productName);
 }
