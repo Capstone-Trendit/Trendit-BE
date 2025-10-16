@@ -43,6 +43,17 @@ dependencies {
 	implementation 'org.json:json:20231013'
 	implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 	implementation 'mysql:mysql-connector-java:8.0.33'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'   // WebClient
+	implementation 'org.springframework.boot:spring-boot-starter-validation' // @Validated(Optional)
+
+	//허깅페이스 사용시 모델을 로컬캐시에 저장하기 위한 라이브러리
+	// DJL BOM (버전 관리)
+	implementation platform("ai.djl:bom:0.28.0")
+	// DJL 엔진 (PyTorch)
+	implementation 'ai.djl.pytorch:pytorch-engine'
+	// DJL HuggingFace 지원
+	implementation "ai.djl.huggingface:tokenizers"
+	runtimeOnly "ai.djl.pytorch:pytorch-native-cpu:2.2.2:win-x86_64"
 }
 
 tasks.named('test') {
