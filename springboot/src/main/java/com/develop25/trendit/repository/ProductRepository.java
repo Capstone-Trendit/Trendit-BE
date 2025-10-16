@@ -1,12 +1,10 @@
 package com.develop25.trendit.repository;
 
 import com.develop25.trendit.domain.Product;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 
-import java.util.ArrayList;
+public interface ProductRepository extends JpaRepository<Product, Long> {
+    List<Product> findByUser_UserId(String userId);
 
-public interface ProductRepository extends CrudRepository<Product, Long> {
-
-    @Override
-    ArrayList<Product> findAll();
 }
