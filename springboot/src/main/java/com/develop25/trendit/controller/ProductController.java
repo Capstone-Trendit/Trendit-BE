@@ -9,9 +9,12 @@ import com.develop25.trendit.repository.ProductImageRepository;
 import com.develop25.trendit.repository.ProductRepository;
 import com.develop25.trendit.repository.TagRepository;
 import com.develop25.trendit.repository.UserRepository;
-import com.develop25.trendit.service.*;
+import com.develop25.trendit.service.ImageTagService;
+import com.develop25.trendit.service.ProductService;
+import com.develop25.trendit.service.UtilTagService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +35,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class ProductController {
     @Autowired
     private ProductRepository productRepository;
@@ -52,6 +56,7 @@ public class ProductController {
     @Autowired
     private TagSimilarityService tagSimilarityService ;
 
+    private final ProductService productService;
 
     //swagger의 multipart/form-data 인식을 위한 어노테이션
     @Operation(
@@ -146,5 +151,18 @@ public class ProductController {
         utilTagService.saveTags(name, finalTags);
 
         return ResponseEntity.ok("상품 등록 완료");
+    }
+
+    @Operation(summary = "해당 유저가 등록한 모든 상품 조회")
+    @GetMapping("/product/{userId}")
+    public List<Product> getProductsByUser(@PathVariable String userId) {
+        return productService.getProductsByUserId(userId);
+    }
+
+    @Operation(summary = "해당 상품 정보 수정")
+    @PutMapping("/product/update/{productId}")
+    public Product updateProduct(@PathVariable Long productId, @org.springframework.web.bind.annotation.RequestBody ProductDTO dto) {
+        System.out.println("📥 요청 DTO: " + dto);
+        return productService.updateProduct(productId, dto);
     }
 }
