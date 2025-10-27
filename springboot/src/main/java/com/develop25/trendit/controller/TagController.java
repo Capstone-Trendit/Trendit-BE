@@ -103,7 +103,9 @@ public class TagController {
         입력한 태그 목록(tags)을 상품명(name)으로부터 추출한 네이버 쇼핑 대표 카테고리 태그와 비교하여,
         유사도가 임계값(기본 0.7) 이상이면 해당 태그로 치환한 최종 태그 리스트를 반환
         """)
-    @PostMapping(path = "/tagChange")
+    @PostMapping(path = "/tagChange",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public List<String> getTagChange(@ModelAttribute TagChangeRequest req) {
         String name = req.getName();
         List<String> tags = req.getTags();
