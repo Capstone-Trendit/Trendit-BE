@@ -106,7 +106,7 @@ public class TagController {
     @PostMapping(path = "/tagChange",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<String> getTagChange(@ModelAttribute TagChangeRequest req) {
+    public List<String> getTagChange(@RequestBody TagChangeRequest req) {
         String name = req.getName();
         List<String> tags = req.getTags();
         //네이버 쇼핑에서 상품명에 대한 카테고리 추출
