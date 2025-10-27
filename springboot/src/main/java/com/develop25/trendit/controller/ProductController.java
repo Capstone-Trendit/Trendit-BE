@@ -49,12 +49,12 @@ public class ProductController {
     private UserRepository userRepository;
     @Autowired
     private UtilTagService utilTagService;
-    @Autowired
-    private SbertService sbertService;
-    @Autowired
-    private CategoryTagService categoryTagService ;
-    @Autowired
-    private TagSimilarityService tagSimilarityService ;
+//    @Autowired
+//    private SbertService sbertService;
+//    @Autowired
+//    private CategoryTagService categoryTagService ;
+//    @Autowired
+//    private TagSimilarityService tagSimilarityService ;
 
     private final ProductService productService;
 
@@ -80,13 +80,17 @@ public class ProductController {
         //String userId = request.getUserId();
         //String userPassword = request.getUserPassword();
 
-        //네이버 쇼핑에서 상품명에 대한 카테고리 추출
-        CategoryTagService.CategoryTagResult naverSearch = categoryTagService.categoryTagForProductName(name);
-        List<String> naverSearchTag = naverSearch.tag();
+//        //네이버 쇼핑에서 상품명에 대한 카테고리 추출
+//        CategoryTagService.CategoryTagResult naverSearch = categoryTagService.categoryTagForProductName(name);
+//        System.out.println("naverSearch       = " + naverSearch);
+//        List<String> naverSearchTag = naverSearch.tag();
+//        System.out.println("naverSearchTag    = " + naverSearchTag);
+//
+//        //이미지 태그와 네이버 쇼핑 대표 카테고리와 유사도 계산해서 설정한 임계값(threshold) 이상이면 네이버 쇼핑의 태그로 대체하여
+//        //최종 태그 생성
+//        List<String> finalTags = tagSimilarityService.replaceIfSimilar(tags, naverSearchTag, 0.7);
+//        System.out.println("finalTags(thr=0.7)= " + finalTags);
 
-        //이미지 태그와 네이버 쇼핑 대표 카테고리와 유사도 계산해서 설정한 임계값(threshold) 이상이면 네이버 쇼핑의 태그로 대체하여
-        //최종 태그 생성
-        List<String> finalTags = tagSimilarityService.replaceIfSimilar(tags, naverSearchTag, 0.8);
 
         //유저 id로 유저 객체 조회
 //        User user = userRepository.findByUserIdAndPassword(userId, userPassword)
@@ -139,7 +143,7 @@ public class ProductController {
         //ObjectMapper mapper = new ObjectMapper();
         //List<String> tags = mapper.readValue(tagsJson, new TypeReference<List<String>>() {});
 
-        for (String tagStr : finalTags) {
+        for (String tagStr : tags) {
             Tag tag = new Tag();
             tag.setName(tagStr);
             tagRepository.save(tag); // 먼저 tag를 저장해야 ID가 생성됨
@@ -148,7 +152,7 @@ public class ProductController {
         }
         productRepository.save(product); //  연관관계 반영
 
-        utilTagService.saveTags(name, finalTags);
+        utilTagService.saveTags(name, tags);
 
         return ResponseEntity.ok("상품 등록 완료");
     }

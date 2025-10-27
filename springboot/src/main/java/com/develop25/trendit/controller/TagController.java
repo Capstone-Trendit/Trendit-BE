@@ -4,18 +4,18 @@ import com.develop25.trendit.domain.Image;
 import com.develop25.trendit.domain.Product;
 import com.develop25.trendit.domain.Tag;
 import com.develop25.trendit.dto.ImageUploadRequest;
+import com.develop25.trendit.dto.TagChangeRequest;
 import com.develop25.trendit.repository.ProductImageRepository;
 import com.develop25.trendit.repository.ProductRepository;
 import com.develop25.trendit.repository.TagRepository;
-import com.develop25.trendit.service.BasicTagService;
-import com.develop25.trendit.service.ImageTagService;
-import com.develop25.trendit.service.SituationTagService;
+import com.develop25.trendit.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,6 +45,10 @@ public class TagController {
     private SituationTagService situationTagService;
     @Autowired
     private BasicTagService basicTagService;
+    @Autowired
+    private CategoryTagService categoryTagService ;
+    @Autowired
+    private TagSimilarityService tagSimilarityService ;
 
 
     @Value("${openai.api.key}")
@@ -89,16 +93,35 @@ public class TagController {
         return ResponseEntity.ok(new ArrayList<>(finalTags));
     }
 
-
-
-
-
-
     //Get
     @GetMapping("{productId}")
     public List<Tag> getTagsByProductId(@PathVariable Long productId) {
         return tagRepository.findByProducts_ProductId(productId);
     }
+    @Operation(description = """
+        입력한 태그 목록(tags)을 상품명(name)으로부터 추출한 네이버 쇼핑 대표 카테고리 태그와 비교하여,
+        유사도가 임계값(기본 0.7) 이상이면 해당 태그로 치환한 최종 태그 리스트를 반환
+        """)
+    @PostMapping(path = "/tagChange",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<String> getTagChange(@ModelAttribute TagChangeRequest req) {
+        String name = req.getName();
+        List<String> tags = req.getTags();
+        //네이버 쇼핑에서 상품명에 대한 카테고리 추출
+        CategoryTagService.CategoryTagResult naverSearch = categoryTagService.categoryTagForProductName(name);
+        System.out.println("naverSearch       = " + naverSearch);
+        List<String> naverSearchTag = naverSearch.tag();
+        System.out.println("naverSearchTag    = " + naverSearchTag);
+
+        //이미지 태그와 네이버 쇼핑 대표 카테고리와 유사도 계산해서 설정한 임계값(threshold) 이상이면 네이버 쇼핑의 태그로 대체하여
+        //최종 태그 생성
+        List<String> finalTags = tagSimilarityService.replaceIfSimilar(tags, naverSearchTag, 0.7);
+        System.out.println("finalTags(thr=0.7)= " + finalTags);
+        return finalTags;
+    }
+
+
 
 
 }
