@@ -1,7 +1,14 @@
 package com.develop25.trendit.dto;
 
+import lombok.*;
+
 import java.util.List;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class TagChangeRequest {
     private String name;           // 상품명
     private List<String> tags;     // 태그 목록
