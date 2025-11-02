@@ -22,6 +22,7 @@ configurations {
 repositories {
 	mavenCentral()
 }
+ext.djlVersion = "0.35.0"
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -46,14 +47,19 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'   // WebClient
 	implementation 'org.springframework.boot:spring-boot-starter-validation' // @Validated(Optional)
 
-	//허깅페이스 사용시 모델을 로컬캐시에 저장하기 위한 라이브러리
-	// DJL BOM (버전 관리)
-	implementation platform("ai.djl:bom:0.28.0")
-	// DJL 엔진 (PyTorch)
-	implementation 'ai.djl.pytorch:pytorch-engine'
-	// DJL HuggingFace 지원
-	implementation "ai.djl.huggingface:tokenizers"
-	runtimeOnly "ai.djl.pytorch:pytorch-native-cpu:2.2.2:win-x86_64"
+	// (권장) BOM으로 DJL 모듈 버전 일괄 관리
+	implementation platform("ai.djl:bom:${djlVersion}")
+
+	// 필수
+	implementation "ai.djl:api"
+	implementation "ai.djl.huggingface:tokenizers"     // ← translator 아님!
+
+	// PyTorch 엔진
+	implementation "ai.djl.pytorch:pytorch-engine"
+
+	// 네이티브 런타임 (버전 주의)
+	runtimeOnly "ai.djl.pytorch:pytorch-jni:2.7.1-${djlVersion}"
+	runtimeOnly "ai.djl.pytorch:pytorch-native-cpu:2.7.1:linux-x86_64"
 }
 
 tasks.named('test') {
