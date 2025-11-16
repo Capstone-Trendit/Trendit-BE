@@ -82,13 +82,24 @@ public class TagController {
             tags = basicTags;
         }
 
+        //네이버 쇼핑에서 상품명에 대한 카테고리 추출
+        CategoryTagService.CategoryTagResult naverSearch = categoryTagService.categoryTagForProductName(productName);
+        System.out.println("naverSearch       = " + naverSearch);
+        List<String> naverSearchTag = naverSearch.tag();
+        System.out.println("naverSearchTag    = " + naverSearchTag);
+
+        //이미지 태그와 네이버 쇼핑 대표 카테고리와 유사도 계산해서 설정한 임계값(threshold) 이상이면 네이버 쇼핑의 태그로 대체하여
+        //최종 태그 생성
+        List<String> finalTags1 = tagSimilarityService.replaceIfSimilar(tags, naverSearchTag, 0.7);
+        System.out.println("finalTags(thr=0.7)= " + finalTags1);
+
         // 상품명은 이미지 태그의 첫 번째 요소
         //String productName = tags.isEmpty() ? "" : tags.get(0);
         // 2. 상품명 기반 상황 태그 생성
         //List<String> situationTags = situationTagService.generateAdditionalTags(productName);
         // 3. 태그 통합 (중복 제거)
         Set<String> finalTags = new LinkedHashSet<>(); // 순서 유지
-        finalTags.addAll(tags);
+        finalTags.addAll(finalTags1);
         //finalTags.addAll(situationTags);
         return ResponseEntity.ok(new ArrayList<>(finalTags));
     }
@@ -121,7 +132,6 @@ public class TagController {
         System.out.println("finalTags(thr=0.7)= " + finalTags);
         return finalTags;
     }
-
 
 
 
